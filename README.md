@@ -4,7 +4,7 @@ Open Command promot and run command::
 mvn spring-boot:run
 
 
-Use below url in postman :: 
+Use url in postman :: 
 http://localhost:9191/actuator/health
 
 
