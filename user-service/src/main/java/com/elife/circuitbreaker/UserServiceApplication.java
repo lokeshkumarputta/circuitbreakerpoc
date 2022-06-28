@@ -3,6 +3,7 @@ package com.elife.circuitbreaker;
 import com.elife.circuitbreaker.dto.OrderDTO;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,9 @@ public class UserServiceApplication {
     @Lazy
     private RestTemplate restTemplate;
 
+    @Value("${base.url}")
+    String baseurl; //http://localhost:9191/orders
+
     public static final String USER_SERVICE="userService";
 
     private static final String BASEURL = "http://localhost:9191/orders";
@@ -39,7 +43,7 @@ public class UserServiceApplication {
     @CircuitBreaker(name =USER_SERVICE,fallbackMethod = "getAllAvailableProducts")
 //    @Retry(name = USER_SERVICE,fallbackMethod = "getAllAvailableProducts")
     public List<OrderDTO> displayOrders(@RequestParam("category") String category) {
-        String url = category == null ? BASEURL : BASEURL + "/" + category;
+        String url = category == null ? baseurl : baseurl + "/" + category;
         System.out.println("retry method called "+attempt++ +" times "+" at "+new Date());
         return restTemplate.getForObject(url, ArrayList.class);
     }
